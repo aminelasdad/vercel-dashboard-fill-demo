@@ -196,6 +196,7 @@ Le plus rapide pour les captures :
 /api/email/send
 /api/campaign/run
 /api/stripe/webhook
+Trigger Vercel deployment
 /api/contacts/import
 /api/billing/invoice
 /api/domains/check
