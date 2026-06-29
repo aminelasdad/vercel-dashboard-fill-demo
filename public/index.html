@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vercel Dashboard Fill Demo</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fafafa;color:#111}
+main{max-width:980px;margin:0 auto;padding:56px 24px}.badge{display:inline-flex;border:1px solid #e5e5e5;background:#fff;border-radius:999px;padding:6px 10px;font-size:13px;color:#555;margin-bottom:16px}
+h1{font-size:42px;letter-spacing:-.05em;margin:0 0 12px}p{color:#555;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:28px}
+.card{border:1px solid #e5e5e5;background:#fff;border-radius:12px;padding:18px}.card strong{display:block;margin-bottom:6px}
+code{font-family:Consolas,monospace;font-size:13px;background:#f4f4f5;border:1px solid #e5e5e5;padding:2px 5px;border-radius:6px}
+button{border:1px solid #111;background:#111;color:#fff;height:38px;border-radius:8px;padding:0 14px;font-weight:600;cursor:pointer}
+button.secondary{background:#fff;color:#111;border-color:#e5e5e5}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.log{margin-top:24px;border:1px solid #e5e5e5;background:#fff;border-radius:12px;padding:16px;height:220px;overflow:auto;font-family:Consolas,monospace;font-size:13px;color:#333}
+@media(max-width:720px){.grid{grid-template-columns:1fr}h1{font-size:32px}}
+</style>
+</head>
+<body>
+<main>
+<div class="badge">Vercel Dashboard Fill Demo</div>
+<h1>Projet pour remplir le vrai dashboard Vercel</h1>
+<p>Cette page génère de vraies requêtes vers des fonctions Vercel. Elles apparaîtront dans Logs, Deployments et Functions.</p>
+<div class="grid">
+<div class="card"><strong>Email API</strong><p>Logs de campagne email.</p><code>/api/email-send</code></div>
+<div class="card"><strong>Campaign API</strong><p>Logs de campagne marketing.</p><code>/api/campaign-run</code></div>
+<div class="card"><strong>Stripe Webhook</strong><p>Logs webhook paiement.</p><code>/api/stripe-webhook</code></div>
+<div class="card"><strong>Error Route</strong><p>Erreur volontaire pour remplir les erreurs.</p><code>/api/error</code></div>
+</div>
+<div class="row"><button id="start">Start browser traffic</button><button id="stop" class="secondary">Stop</button><button id="burst" class="secondary">Send burst</button></div>
+<div id="log" class="log">Browser traffic log will appear here...</div>
+</main>
+<script>
+let timer=null;
+const routes=["/api/email-send","/api/campaign-run","/api/stripe-webhook","/api/contacts-import","/api/billing-invoice","/api/domains-check","/api/slow","/api/error","/api/health"];
+const logBox=document.getElementById("log");
+function write(m){logBox.innerHTML="["+new Date().toLocaleTimeString()+"] "+m+"<br>"+logBox.innerHTML}
+async function hit(){const r=routes[Math.floor(Math.random()*routes.length)];try{const res=await fetch(r);write(res.status+" "+r)}catch(e){write("FAILED "+r)}}
+document.getElementById("start").onclick=()=>{if(timer)return;write("Traffic started");timer=setInterval(hit,1800)};
+document.getElementById("stop").onclick=()=>{if(timer)clearInterval(timer);timer=null;write("Traffic stopped")};
+document.getElementById("burst").onclick=async()=>{write("Burst started");for(let i=0;i<30;i++){hit();await new Promise(r=>setTimeout(r,220))}write("Burst completed")};
+</script>
+</body>
+</html>
